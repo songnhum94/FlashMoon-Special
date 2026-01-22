@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USD Strict System Infographic</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&family=Roboto:wght@300;400;700&display=swap"
+        rel="stylesheet">
     <!-- FontAwesome for Chevron Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
             font-family: 'Kanit', sans-serif;
-            background-color: #0f172a; /* Slate 900 */
-            color: #f8fafc; /* Slate 50 */
+            background-color: #0f172a;
+            /* Slate 900 */
+            color: #f8fafc;
+            /* Slate 50 */
             transition: all 0.3s ease;
         }
-        
+
         .chart-container {
             position: relative;
             width: 100%;
@@ -38,52 +43,75 @@
             width: 100%;
             overflow-x: auto;
         }
+
         .tree ul {
-            padding-top: 40px; 
+            padding-top: 40px;
             position: relative;
             transition: all 0.5s;
             display: flex;
             justify-content: center;
             padding-left: 0;
         }
+
         .tree li {
-            float: left; text-align: center;
+            float: left;
+            text-align: center;
             list-style-type: none;
             position: relative;
             padding: 40px 10px 0 10px;
             transition: all 0.5s;
         }
-        .tree li::before, .tree li::after {
-            content: '';
-            position: absolute; top: 0; right: 50%;
-            border-top: 1px solid #475569;
-            width: 50%; height: 40px;
-        }
+
+        .tree li::before,
         .tree li::after {
-            right: auto; left: 50%;
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 50%;
+            border-top: 1px solid #475569;
+            width: 50%;
+            height: 40px;
+        }
+
+        .tree li::after {
+            right: auto;
+            left: 50%;
             border-left: 1px solid #475569;
         }
-        .tree li:only-child::after, .tree li:only-child::before {
+
+        .tree li:only-child::after,
+        .tree li:only-child::before {
             display: none;
         }
-        .tree li:only-child { padding-top: 0; }
-        .tree li:first-child::before, .tree li:last-child::after {
+
+        .tree li:only-child {
+            padding-top: 0;
+        }
+
+        .tree li:first-child::before,
+        .tree li:last-child::after {
             border: 0 none;
         }
-        .tree li:last-child::before{
+
+        .tree li:last-child::before {
             border-right: 1px solid #475569;
             border-radius: 0 5px 0 0;
         }
-        .tree li:first-child::after{
+
+        .tree li:first-child::after {
             border-radius: 5px 0 0 0;
         }
-        .tree ul ul::before{
+
+        .tree ul ul::before {
             content: '';
-            position: absolute; top: 0; left: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
             border-left: 1px solid #475569;
-            width: 0; height: 40px;
+            width: 0;
+            height: 40px;
         }
-        
+
         .node-circle {
             width: 28px;
             height: 28px;
@@ -94,24 +122,59 @@
             margin: 0 auto;
             font-size: 8px;
             font-weight: bold;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
             z-index: 10;
             position: relative;
             transition: all 0.3s ease;
         }
-        
-        .node-me { background-color: #f8fafc; color: #0f172a; border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
-        .node-income { background-color: #34d399; color: #064e3b; } /* Emerald */
-        .node-fund { background-color: #f59e0b; color: #fff; } /* Amber */
-        .node-reentry { background-color: #a855f7; color: #fff; } /* Purple */
-        .node-bonus { background-color: #22d3ee; color: #000; box-shadow: 0 0 8px #22d3ee; } /* Cyan */
-        .node-aura { background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%); color: #0f172a; box-shadow: 0 0 12px #fff; border: 2px solid #fff; } /* White Gold */
+
+        .node-me {
+            background-color: #f8fafc;
+            color: #0f172a;
+            border-color: #fff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .node-income {
+            background-color: #34d399;
+            color: #064e3b;
+        }
+
+        /* Emerald */
+        .node-fund {
+            background-color: #f59e0b;
+            color: #fff;
+        }
+
+        /* Amber */
+        .node-reentry {
+            background-color: #a855f7;
+            color: #fff;
+        }
+
+        /* Purple */
+        .node-bonus {
+            background-color: #22d3ee;
+            color: #000;
+            box-shadow: 0 0 8px #22d3ee;
+        }
+
+        /* Cyan */
+        .node-aura {
+            background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
+            color: #0f172a;
+            box-shadow: 0 0 12px #fff;
+            border: 2px solid #fff;
+        }
+
+        /* White Gold */
 
         /* Rebirth Node Style (White with Purple Neon Aura) */
         .node-rebirth {
             background-color: #ffffff;
-            color: #7e22ce; /* Purple-700 */
+            color: #7e22ce;
+            /* Purple-700 */
             border: 2px solid #fff;
             animation: rebirthPulse 2s infinite alternate;
             font-size: 7px;
@@ -122,6 +185,7 @@
                 box-shadow: 0 0 5px #a855f7, 0 0 10px #a855f7;
                 transform: scale(1);
             }
+
             100% {
                 box-shadow: 0 0 15px #d8b4fe, 0 0 25px #a855f7;
                 transform: scale(1.15);
@@ -129,7 +193,12 @@
         }
 
         .legend-dot {
-            width: 14px; height: 14px; border-radius: 50%; display: inline-block; margin-right: 8px; vertical-align: middle;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
         }
 
         /* Language Toggle Switch */
@@ -144,6 +213,7 @@
             position: relative;
             transition: background 0.3s;
         }
+
         .lang-switch .knob {
             width: 34px;
             height: 26px;
@@ -159,6 +229,7 @@
             color: #0f172a;
             font-weight: bold;
         }
+
         .lang-switch.th-active .knob {
             transform: translateX(42px);
             background: #34d399;
@@ -172,6 +243,7 @@
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
         }
+
         .plan-tab {
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
@@ -183,10 +255,12 @@
             background: #1e293b;
             color: #94a3b8;
         }
+
         .plan-tab:hover {
             background: #334155;
             color: #fff;
         }
+
         .plan-tab.active {
             background: #22d3ee;
             color: #0f172a;
@@ -200,40 +274,46 @@
             transition: background-color 0.2s;
             user-select: none;
         }
+
         .collapsible-header:hover {
             background-color: #1e293b;
         }
+
         .collapsible-content {
             max-height: 2000px;
             overflow: hidden;
             transition: max-height 0.4s ease-out, opacity 0.4s ease-out, padding 0.4s ease;
             opacity: 1;
         }
+
         .collapsible-content.collapsed {
             max-height: 0;
             opacity: 0;
             padding-top: 0;
             padding-bottom: 0;
         }
+
         .chevron-icon {
             transition: transform 0.3s ease;
         }
+
         .chevron-icon.rotate {
             transform: rotate(-180deg);
         }
-        
+
         /* Updated Logo Styles: Neon Aura */
         .logo-neon-aura {
             border: 2px solid #22d3ee;
             box-shadow: 0 0 15px #22d3ee, 0 0 30px #22d3ee, inset 0 0 15px #22d3ee;
             animation: auraBreathing 3s infinite alternate ease-in-out;
         }
-        
+
         @keyframes auraBreathing {
             0% {
                 box-shadow: 0 0 15px #22d3ee, 0 0 30px #22d3ee, inset 0 0 10px #22d3ee;
                 border-color: #22d3ee;
             }
+
             100% {
                 box-shadow: 0 0 25px #a855f7, 0 0 50px #a855f7, inset 0 0 20px #a855f7;
                 border-color: #a855f7;
@@ -245,9 +325,11 @@
             transition: all 0.2s;
             transform: scale(1);
         }
+
         .mode-btn:active {
             transform: scale(0.95);
         }
+
         .mode-btn.active {
             box-shadow: 0 0 15px currentColor;
             border-color: currentColor;
@@ -255,14 +337,12 @@
 
         /* Neon Running Text Effect */
         .neon-running-text {
-            background: linear-gradient(
-                90deg,
-                #22d3ee 0%,
-                #a855f7 25%,
-                #f472b6 50%,
-                #a855f7 75%,
-                #22d3ee 100%
-            );
+            background: linear-gradient(90deg,
+                    #22d3ee 0%,
+                    #a855f7 25%,
+                    #f472b6 50%,
+                    #a855f7 75%,
+                    #22d3ee 100%);
             background-size: 200% auto;
             color: #fff;
             background-clip: text;
@@ -279,13 +359,21 @@
                 background-position: 200% center;
             }
         }
-        
+
         @media (min-width: 768px) {
-            .node-circle { width: 40px; height: 40px; font-size: 10px; }
-            .tree li { padding: 20px 5px 0 5px; }
+            .node-circle {
+                width: 40px;
+                height: 40px;
+                font-size: 10px;
+            }
+
+            .tree li {
+                padding: 20px 5px 0 5px;
+            }
         }
     </style>
 </head>
+
 <body class="antialiased">
 
     <!-- Header Section -->
@@ -295,7 +383,7 @@
                 <h1 class="text-2xl font-bold text-cyan-400 tracking-wider uppercase">FlashMoon Special</h1>
                 <!-- Subtitle removed as requested -->
             </div>
-            
+
             <!-- Language Toggle -->
             <div class="flex items-center gap-2">
                 <span class="text-xs text-slate-400">EN</span>
@@ -311,24 +399,33 @@
 
         <!-- 1. Introduction -->
         <section class="text-center max-w-3xl mx-auto mb-8">
-            <h2 class="text-3xl md:text-4xl font-extrabold mb-4 neon-running-text" id="txt-intro-title">FlashMoon Special Ecosystem</h2>
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-4 neon-running-text" id="txt-intro-title">FlashMoon
+                Special Ecosystem</h2>
             <p class="text-slate-300 leading-relaxed" id="txt-intro-desc">
-                The <strong>USD Strict Multi-Level System</strong> is designed to create a sustainable, infinite loop of revenue through a 15-node binary cycle. Utilizing a <strong>100% distribution model</strong>, every dollar entering the system is instantly allocated to members and the community fund, ensuring zero wastage.
+                The <strong>USD Strict Multi-Level System</strong> is designed to create a sustainable, infinite loop of
+                revenue through a 15-node binary cycle. Utilizing a <strong>100% distribution model</strong>, every
+                dollar entering the system is instantly allocated to members and the community fund, ensuring zero
+                wastage.
             </p>
         </section>
 
         <!-- 2. The 100% Split - Collapsible -->
         <section class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
-            <div class="p-6 collapsible-header flex justify-between items-center" onclick="toggleSection('dist-content', 'dist-chevron')">
-                <h3 class="text-xl font-bold text-white border-l-4 border-cyan-500 pl-3" id="txt-dist-title">The 100% Split</h3>
+            <div class="p-6 collapsible-header flex justify-between items-center"
+                onclick="toggleSection('dist-content', 'dist-chevron')">
+                <h3 class="text-xl font-bold text-white border-l-4 border-cyan-500 pl-3" id="txt-dist-title">The 100%
+                    Split</h3>
                 <div class="text-slate-400 p-2"><i id="dist-chevron" class="fas fa-chevron-up chevron-icon"></i></div>
             </div>
-            
+
             <div id="dist-content" class="collapsible-content px-6 pb-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div class="flex justify-center items-center py-8">
-                        <div class="w-64 h-64 rounded-full bg-slate-900 flex items-center justify-center relative logo-neon-aura">
-                            <img src="IMG/LOGO.png" alt="Flash Moon Logo" alt="FlashMoon Logo" class="w-full h-full object-contain rounded-full relative z-10 p-4" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
+                        <div
+                            class="w-64 h-64 rounded-full bg-slate-900 flex items-center justify-center relative logo-neon-aura">
+                            <img src="IMG/LOGO.png" alt="Flash Moon Logo" alt="FlashMoon Logo"
+                                class="w-full h-full object-contain rounded-full relative z-10 p-0.5"
+                                onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
                             <div id="logo-fallback" class="text-center absolute z-0" style="display:none;">
                                 <i class="fas fa-cube text-5xl text-cyan-400 mb-2"></i>
                                 <span class="block text-slate-300 font-bold tracking-widest text-sm">LOGO</span>
@@ -356,59 +453,74 @@
 
         <!-- 3. Special Features & Rewards - Collapsible -->
         <section class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
-            <div class="p-6 collapsible-header flex justify-between items-center" onclick="toggleSection('feat-content', 'feat-chevron')">
-                <h3 class="text-xl font-bold text-white border-l-4 border-amber-500 pl-3" id="txt-feat-main-title">Special Features & Rewards</h3>
+            <div class="p-6 collapsible-header flex justify-between items-center"
+                onclick="toggleSection('feat-content', 'feat-chevron')">
+                <h3 class="text-xl font-bold text-white border-l-4 border-amber-500 pl-3" id="txt-feat-main-title">
+                    Special Features & Rewards</h3>
                 <div class="text-slate-400 p-2"><i id="feat-chevron" class="fas fa-chevron-up chevron-icon"></i></div>
             </div>
 
             <div id="feat-content" class="collapsible-content px-6 pb-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-gradient-to-br from-purple-900 to-slate-900 p-6 rounded-xl border border-purple-700 shadow-lg relative overflow-hidden group">
+                    <div
+                        class="bg-gradient-to-br from-purple-900 to-slate-900 p-6 rounded-xl border border-purple-700 shadow-lg relative overflow-hidden group">
                         <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                             <span class="text-6xl">∞</span>
                         </div>
                         <h4 class="text-lg font-bold text-purple-300 mb-2 flex items-center" id="feat-rebirth-title">
-                            <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm">R</span>
+                            <span
+                                class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm">R</span>
                             Auto-Rebirth
                         </h4>
                         <p class="text-sm text-slate-300 leading-relaxed" id="feat-rebirth-desc">
-                            The system never ends. When the first two nodes on Level 3 (Left) are filled, the income is reserved to automatically purchase a new position for you.
+                            The system never ends. When the first two nodes on Level 3 (Left) are filled, the income is
+                            reserved to automatically purchase a new position for you.
                         </p>
                     </div>
-                    <div class="bg-gradient-to-br from-cyan-900 to-slate-900 p-6 rounded-xl border border-cyan-700 shadow-lg relative overflow-hidden group">
+                    <div
+                        class="bg-gradient-to-br from-cyan-900 to-slate-900 p-6 rounded-xl border border-cyan-700 shadow-lg relative overflow-hidden group">
                         <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                             <span class="text-6xl">★</span>
                         </div>
                         <h4 class="text-lg font-bold text-cyan-300 mb-2 flex items-center" id="feat-aura-title">
-                            <span class="bg-cyan-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm">W</span>
+                            <span
+                                class="bg-cyan-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm">W</span>
                             White Gold Aura
                         </h4>
                         <p class="text-sm text-slate-300 leading-relaxed" id="feat-aura-desc">
-                            <strong>Cross-Plan Cloning:</strong> When you finish a cycle in a higher plan, the final node creates a brand new ID for you in the lower plan, ensuring constant support.
+                            <strong>Cross-Plan Cloning:</strong> When you finish a cycle in a higher plan, the final
+                            node creates a brand new ID for you in the lower plan, ensuring constant support.
                         </p>
                     </div>
-                    <div class="bg-gradient-to-br from-amber-900 to-slate-900 p-6 rounded-xl border border-amber-700 shadow-lg relative overflow-hidden group">
+                    <div
+                        class="bg-gradient-to-br from-amber-900 to-slate-900 p-6 rounded-xl border border-amber-700 shadow-lg relative overflow-hidden group">
                         <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                             <span class="text-6xl">F</span>
                         </div>
                         <h4 class="text-lg font-bold text-amber-300 mb-2 flex items-center" id="feat-fund-title">
-                            <span class="bg-amber-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm"><i class="fas fa-coins"></i></span>
+                            <span
+                                class="bg-amber-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm"><i
+                                    class="fas fa-coins"></i></span>
                             Community Fund
                         </h4>
                         <p class="text-sm text-slate-300 leading-relaxed" id="feat-fund-desc">
-                            The accumulated Fund is used to purchase <strong>FM Coins</strong>, which are distributed to every member in the system every <strong>7 days</strong>.
+                            The accumulated Fund is used to purchase <strong>FM Coins</strong>, which are distributed to
+                            every member in the system every <strong>7 days</strong>.
                         </p>
                     </div>
-                    <div class="bg-gradient-to-br from-pink-900 to-slate-900 p-6 rounded-xl border border-pink-700 shadow-lg relative overflow-hidden group">
+                    <div
+                        class="bg-gradient-to-br from-pink-900 to-slate-900 p-6 rounded-xl border border-pink-700 shadow-lg relative overflow-hidden group">
                         <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                             <span class="text-6xl">L</span>
                         </div>
                         <h4 class="text-lg font-bold text-pink-300 mb-2 flex items-center" id="feat-lotto-title">
-                            <span class="bg-pink-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm"><i class="fas fa-ticket-alt"></i></span>
-                            Lotto Jackpot
+                            <span
+                                class="bg-pink-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm"><i
+                                    class="fas fa-ticket-alt"></i></span>
+                            Jackpot Rewards
                         </h4>
                         <p class="text-sm text-slate-300 leading-relaxed" id="feat-lotto-desc">
-                            The Lotto Fund accumulates for a prize draw every <strong>15 days</strong>, aligned with the <strong>Thai Government Lottery</strong> schedule.
+                            The Lotto Fund accumulates for a prize draw every <strong>15 days</strong>.
                         </p>
                     </div>
                 </div>
@@ -417,8 +529,10 @@
 
         <!-- 4. The 15-Node Cycle Engine - Collapsible -->
         <section class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
-            <div class="p-6 collapsible-header flex justify-between items-center" onclick="toggleSection('cycle-content', 'cycle-chevron')">
-                <h3 class="text-xl font-bold text-white border-l-4 border-purple-500 pl-3" id="txt-cycle-title">The 15-Node Cycle Engine</h3>
+            <div class="p-6 collapsible-header flex justify-between items-center"
+                onclick="toggleSection('cycle-content', 'cycle-chevron')">
+                <h3 class="text-xl font-bold text-white border-l-4 border-purple-500 pl-3" id="txt-cycle-title">The
+                    15-Node Cycle Engine</h3>
                 <div class="text-slate-400 p-2"><i id="cycle-chevron" class="fas fa-chevron-up chevron-icon"></i></div>
             </div>
 
@@ -430,18 +544,21 @@
 
                     <!-- Simulation Buttons -->
                     <div class="flex flex-col sm:flex-row justify-center gap-4 mb-6">
-                        <button onclick="setMode('active')" id="btn-active" class="mode-btn px-6 py-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm sm:text-base border border-emerald-400">
+                        <button onclick="setMode('active')" id="btn-active"
+                            class="mode-btn px-6 py-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm sm:text-base border border-emerald-400">
                             <i class="fas fa-users mr-2"></i> <span id="lbl-btn-active">Recruit All (Active +20%)</span>
                         </button>
-                        <button onclick="setMode('passive')" id="btn-passive" class="mode-btn px-6 py-3 rounded-lg bg-pink-500 hover:bg-pink-600 text-white font-bold text-sm sm:text-base border border-pink-400 active">
-                            <i class="fas fa-user-slash mr-2"></i> <span id="lbl-btn-passive">No Recruit (Passive)</span>
+                        <button onclick="setMode('passive')" id="btn-passive"
+                            class="mode-btn px-6 py-3 rounded-lg bg-pink-500 hover:bg-pink-600 text-white font-bold text-sm sm:text-base border border-pink-400 active">
+                            <i class="fas fa-user-slash mr-2"></i> <span id="lbl-btn-passive">No Recruit
+                                (Passive)</span>
                         </button>
                     </div>
 
                     <!-- Total Result Display -->
                     <div class="mb-6 p-4 bg-slate-900/50 rounded-lg border border-slate-600 inline-block">
-                         <span class="text-slate-400 text-sm block mb-1" id="lbl-total-est">Total Estimated Income</span>
-                         <span class="text-3xl font-bold text-white" id="display-total">$18.00</span>
+                        <span class="text-slate-400 text-sm block mb-1" id="lbl-total-est">Total Estimated Income</span>
+                        <span class="text-3xl font-bold text-white" id="display-total">$18.00</span>
                     </div>
 
                     <div class="plan-tabs">
@@ -454,14 +571,23 @@
                 </div>
 
                 <!-- UPDATED LEGEND -->
-                <div class="flex flex-wrap justify-center gap-y-3 gap-x-6 mb-6 text-xs text-slate-300" id="legend-container">
-                    <div class="flex items-center"><span class="legend-dot bg-slate-100"></span><span data-key="me">ME</span></div>
-                    <div class="flex items-center"><span class="legend-dot bg-emerald-400"></span><span data-key="income">Income</span></div>
-                    <div class="flex items-center"><span class="legend-dot bg-amber-500"></span><span data-key="fund">Fund</span></div>
-                    <div class="flex items-center"><span class="legend-dot bg-purple-500"></span><span data-key="reentry">Re-Entry</span></div>
+                <div class="flex flex-wrap justify-center gap-y-3 gap-x-6 mb-6 text-xs text-slate-300"
+                    id="legend-container">
+                    <div class="flex items-center"><span class="legend-dot bg-slate-100"></span><span
+                            data-key="me">ME</span></div>
+                    <div class="flex items-center"><span class="legend-dot bg-emerald-400"></span><span
+                            data-key="income">Income</span></div>
+                    <div class="flex items-center"><span class="legend-dot bg-amber-500"></span><span
+                            data-key="fund">Fund</span></div>
+                    <div class="flex items-center"><span class="legend-dot bg-purple-500"></span><span
+                            data-key="reentry">Re-Entry</span></div>
                     <!-- Separated Reborn and Clone -->
-                    <div class="flex items-center"><span class="legend-dot bg-white border border-purple-500 shadow-[0_0_8px_#a855f7]"></span><span data-key="reborn">ReBorn</span></div>
-                    <div class="flex items-center"><span class="legend-dot" style="background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%); border: 1px solid #fff; box-shadow: 0 0 5px #fff;"></span><span data-key="clone">Clone/Aura</span></div>
+                    <div class="flex items-center"><span
+                            class="legend-dot bg-white border border-purple-500 shadow-[0_0_8px_#a855f7]"></span><span
+                            data-key="reborn">ReBorn</span></div>
+                    <div class="flex items-center"><span class="legend-dot"
+                            style="background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%); border: 1px solid #fff; box-shadow: 0 0 5px #fff;"></span><span
+                            data-key="clone">Clone/Aura</span></div>
                 </div>
 
                 <!-- Tree Structure -->
@@ -476,16 +602,24 @@
                                         <li>
                                             <div class="node-circle node-fund">F</div>
                                             <ul>
-                                                <li><div class="node-circle node-reentry">R</div></li>
-                                                <li><div class="node-circle node-reentry">R</div></li>
+                                                <li>
+                                                    <div class="node-circle node-reentry">R</div>
+                                                </li>
+                                                <li>
+                                                    <div class="node-circle node-reentry">R</div>
+                                                </li>
                                             </ul>
                                         </li>
                                         <li>
                                             <div class="node-circle node-fund">F</div>
                                             <ul>
                                                 <!-- Level 3, Node 3: ReBorn Node -->
-                                                <li><div class="node-circle node-rebirth" id="node-l3-3">ReBorn</div></li>
-                                                <li><div class="node-circle node-income" id="node-l3-4">$2.5</div></li>
+                                                <li>
+                                                    <div class="node-circle node-rebirth" id="node-l3-3">ReBorn</div>
+                                                </li>
+                                                <li>
+                                                    <div class="node-circle node-income" id="node-l3-4">$2.5</div>
+                                                </li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -496,16 +630,24 @@
                                         <li>
                                             <div class="node-circle node-income" id="node-l2-3">$1.0</div>
                                             <ul>
-                                                <li><div class="node-circle node-income" id="node-l3-5">$2.5</div></li>
-                                                <li><div class="node-circle node-income" id="node-l3-6">$2.5</div></li>
+                                                <li>
+                                                    <div class="node-circle node-income" id="node-l3-5">$2.5</div>
+                                                </li>
+                                                <li>
+                                                    <div class="node-circle node-income" id="node-l3-6">$2.5</div>
+                                                </li>
                                             </ul>
                                         </li>
                                         <li>
                                             <div class="node-circle node-income" id="node-l2-4">$1.0</div>
                                             <ul>
-                                                <li><div class="node-circle node-income" id="node-l3-7">$2.5</div></li>
+                                                <li>
+                                                    <div class="node-circle node-income" id="node-l3-7">$2.5</div>
+                                                </li>
                                                 <!-- Level 3, Node 8: Clone Node (if applicable) -->
-                                                <li><div class="node-circle node-income" id="node-l3-8">$2.5</div></li>
+                                                <li>
+                                                    <div class="node-circle node-income" id="node-l3-8">$2.5</div>
+                                                </li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -519,14 +661,17 @@
 
         <!-- 5. ROI Analysis - Collapsible -->
         <section class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
-            <div class="p-6 collapsible-header flex justify-between items-center" onclick="toggleSection('roi-content', 'roi-chevron')">
-                <h3 class="text-xl font-bold text-white border-l-4 border-emerald-500 pl-3" id="txt-roi-title">Return on Investment (ROI)</h3>
+            <div class="p-6 collapsible-header flex justify-between items-center"
+                onclick="toggleSection('roi-content', 'roi-chevron')">
+                <h3 class="text-xl font-bold text-white border-l-4 border-emerald-500 pl-3" id="txt-roi-title">Return on
+                    Investment (ROI)</h3>
                 <div class="text-slate-400 p-2"><i id="roi-chevron" class="fas fa-chevron-up chevron-icon"></i></div>
             </div>
-            
+
             <div id="roi-content" class="collapsible-content px-6 pb-6">
                 <p class="text-slate-400 text-sm mb-6" id="txt-roi-desc">
-                    Completing a cycle yields a significant return. For Plan 1 ($5), the total return is calculated at <strong>$18</strong>.
+                    Completing a cycle yields a significant return. For Plan 1 ($5), the total return is calculated at
+                    <strong>$18</strong>.
                 </p>
 
                 <!-- Chart -->
@@ -556,25 +701,29 @@
                                 <td class="px-6 py-4 font-medium text-cyan-400">Plan 2</td>
                                 <td class="px-6 py-4">$10</td>
                                 <td class="px-6 py-4 font-bold text-white">$31 - $59</td>
-                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p2">Creates Plan 1 Clone</td>
+                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p2">Creates Plan 1 Clone
+                                </td>
                             </tr>
                             <tr class="bg-slate-800 hover:bg-slate-700">
                                 <td class="px-6 py-4 font-medium text-blue-400">Plan 3</td>
                                 <td class="px-6 py-4">$20</td>
                                 <td class="px-6 py-4 font-bold text-white">$62 - $118</td>
-                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p3">Creates Plan 2 Clone</td>
+                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p3">Creates Plan 2 Clone
+                                </td>
                             </tr>
                             <tr class="bg-slate-800 hover:bg-slate-700">
                                 <td class="px-6 py-4 font-medium text-purple-400">Plan 4</td>
                                 <td class="px-6 py-4">$40</td>
                                 <td class="px-6 py-4 font-bold text-white">$124 - $236</td>
-                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p4">Creates Plan 3 Clone</td>
+                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p4">Creates Plan 3 Clone
+                                </td>
                             </tr>
                             <tr class="bg-slate-800 hover:bg-slate-700">
                                 <td class="px-6 py-4 font-medium text-pink-400">Plan 5</td>
                                 <td class="px-6 py-4">$100</td>
                                 <td class="px-6 py-4 font-bold text-white">$310 - $590</td>
-                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p5">Clone P4 + Fund/Lotto ($10)</td>
+                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p5">Clone P4 + Fund/Lotto
+                                    ($10)</td>
                             </tr>
                         </tbody>
                     </table>
@@ -593,8 +742,8 @@
     <script>
         // --- DATA CONSTANTS ---
         const planData = {
-            1: { cost: 5,  l1: 0.5, l2: 1.0, l3: 2.5, specialNode: false, specialLabel: "$2.5", passiveTotal: 18, activeTotal: 32 },
-            2: { cost: 10, l1: 1.0, l2: 2.0, l3: 5.0, specialNode: true,  specialLabel: "Clone P1", passiveTotal: 31, activeTotal: 59 },
+            1: { cost: 5, l1: 0.5, l2: 1.0, l3: 2.5, specialNode: false, specialLabel: "$2.5", passiveTotal: 18, activeTotal: 32 },
+            2: { cost: 10, l1: 1.0, l2: 2.0, l3: 5.0, specialNode: true, specialLabel: "Clone P1", passiveTotal: 31, activeTotal: 59 },
             3: { cost: 20, l1: 2.0, l2: 4.0, l3: 10.0, specialNode: true, specialLabel: "Clone P2", passiveTotal: 62, activeTotal: 118 },
             4: { cost: 40, l1: 4.0, l2: 8.0, l3: 20.0, specialNode: true, specialLabel: "Clone P3", passiveTotal: 124, activeTotal: 236 },
             5: { cost: 100, l1: 10.0, l2: 20.0, l3: 50.0, specialNode: true, specialLabel: "Clone P4+Fund", passiveTotal: 310, activeTotal: 590 }
@@ -607,7 +756,7 @@
         function toggleSection(elementId, chevronId) {
             const content = document.getElementById(elementId);
             const chevron = document.getElementById(chevronId);
-            
+
             content.classList.toggle('collapsed');
             chevron.classList.toggle('rotate');
         }
@@ -617,7 +766,7 @@
             currentMode = mode;
             const btnPassive = document.getElementById('btn-passive');
             const btnActive = document.getElementById('btn-active');
-            
+
             if (mode === 'passive') {
                 btnPassive.classList.add('active', 'shadow-lg');
                 btnActive.classList.remove('active', 'shadow-lg');
@@ -638,7 +787,7 @@
                 // subtitle removed
                 introTitle: "FlashMoon Special Ecosystem",
                 introDesc: "The <strong>USD Strict Multi-Level System</strong> is designed to create a sustainable, infinite loop of revenue through a 15-node binary cycle. Utilizing a <strong>100% distribution model</strong>, every dollar entering the system is instantly allocated.",
-                
+
                 distTitle: "The 100% Split",
                 distDesc: "There are no hidden fees. When a member joins, 100% of the funds are distributed. <strong>20%</strong> goes instantly to the direct sponsor, while the remaining <strong>80%</strong> is split across three upline levels.",
                 lblSponsor: "Sponsor Bonus",
@@ -657,14 +806,14 @@
                 featRebirthTitle: "Auto-Rebirth", featRebirthDesc: "The system never ends. When the first two nodes on Level 3 (Left) are filled, the income is reserved to automatically purchase a new position for you.",
                 featAuraTitle: "White Gold Aura", featAuraDesc: "<strong>Cross-Plan Cloning:</strong> When you finish a cycle in a higher plan, the final node creates a brand new ID for you in the lower plan, ensuring constant support.",
                 featFundTitle: "Community Fund", featFundDesc: "The accumulated Fund is used to purchase <strong>FM Coins</strong>, which are distributed to every member in the system every <strong>7 days</strong>.",
-                featLottoTitle: "Lotto Jackpot", featLottoDesc: "The Lotto Fund accumulates for a prize draw every <strong>15 days</strong>, aligned with the <strong>Thai Government Lottery</strong> schedule.",
+                featLottoTitle: "Jackpot Rewards", featLottoDesc: "The Lotto Fund accumulates for a prize draw every <strong>15 days</strong>.",
                 chartCost: "Entry Cost", chartReturn: "Total Return"
             },
             th: {
                 // subtitle removed
                 introTitle: "ระบบนิเวศ FlashMoon Special",
                 introDesc: "ระบบ <strong>USD Strict Multi-Level</strong> ออกแบบมาเพื่อสร้างรายได้หมุนเวียนอย่างยั่งยืนผ่านผังไบนารี่ 15 โหนด ด้วยโมเดล <strong>กระจายรายได้ 100%</strong> เงินทุกเหรียญที่เข้าสู่ระบบจะถูกจ่ายให้สมาชิกและกองทุนทันที",
-                
+
                 distTitle: "การแบ่งจ่าย 100%",
                 distDesc: "ไม่มีค่าธรรมเนียมแอบแฝง เมื่อมีสมาชิกใหม่ 100% ของเงินจะถูกกระจายทันที <strong>20%</strong> จ่ายให้ผู้แนะนำตรง และอีก <strong>80%</strong> จ่ายเป็นค่าบริหารทีม 3 ชั้น",
                 lblSponsor: "ค่าแนะนำ (Sponsor)",
@@ -683,7 +832,7 @@
                 featRebirthTitle: "ระบบเกิดใหม่ (Auto-Rebirth)", featRebirthDesc: "ระบบไม่มีที่สิ้นสุด เมื่อโหนด 2 จุดแรกในชั้นที่ 3 (ฝั่งซ้าย) เต็ม ระบบจะเก็บรายได้ไว้ซื้อตำแหน่งใหม่ให้คุณโดยอัตโนมัติ",
                 featAuraTitle: "ออร่าทองคำขาว (White Gold)", featAuraDesc: "<strong>โคลนนิ่งข้ามแผน:</strong> เมื่อคุณจบแผ่นในระดับสูง โหนดสุดท้ายจะสร้างรหัสใหม่ให้คุณในแผนที่ต่ำกว่า เพื่อช่วยพยุงสมาชิกใหม่ในแผนล่าง",
                 featFundTitle: "กองทุนกลาง (Fund)", featFundDesc: "กองทุน Fund จะถูกนำไปซื้อ <strong>FM Coin</strong> เพื่อแจกจ่ายให้กับสมาชิกทุกคนในระบบทุกๆ <strong>7 วัน</strong>",
-                featLottoTitle: "ลุ้นโชค Lotto", featLottoDesc: "กองทุน Lotto จะทำการสะสมเพื่อจับรางวัลใหญ่ทุกๆ <strong>15 วัน</strong> (อ้างอิงตามผลสลากกินแบ่งรัฐบาลไทย)",
+                featLottoTitle: "รางวัลลุ้นโชค", featLottoDesc: "กองทุน Lotto จะทำการสะสมเพื่อจับรางวัลใหญ่ทุกๆ <strong>15 วัน</strong>",
                 chartCost: "ค่าสมัคร", chartReturn: "รายได้ที่สามารถรับได้"
             }
         };
@@ -721,7 +870,7 @@
             document.querySelector('[data-key="income"]').innerText = t.legendIncome;
             document.querySelector('[data-key="fund"]').innerText = t.legendFund;
             document.querySelector('[data-key="reentry"]').innerText = t.legendReentry;
-            
+
             // New Legend Keys
             document.querySelector('[data-key="reborn"]').innerText = t.legendReborn;
             document.querySelector('[data-key="clone"]').innerText = t.legendClone;
@@ -746,7 +895,7 @@
             document.getElementById('feat-fund-desc').innerHTML = t.featFundDesc;
             document.getElementById('feat-lotto-title').innerHTML = `<span class="bg-pink-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm"><i class="fas fa-ticket-alt"></i></span>` + t.featLottoTitle;
             document.getElementById('feat-lotto-desc').innerHTML = t.featLottoDesc;
-            
+
             // Re-render plan to update text language for ReBorn node
             switchPlan(currentPlan);
             updateCharts(t);
@@ -783,7 +932,7 @@
             // --- L3-8: Handle Special Aura/Clone logic if needed ---
             const lastNode = document.getElementById('node-l3-8');
             lastNode.innerText = data.specialLabel;
-            
+
             if (data.specialNode) {
                 lastNode.classList.remove('node-income');
                 lastNode.classList.add('node-aura');
@@ -804,14 +953,14 @@
                     labels: ['Plan 1', 'Plan 2', 'Plan 3', 'Plan 4', 'Plan 5'],
                     datasets: [
                         {
-                            label: translations.en.chartCost, 
+                            label: translations.en.chartCost,
                             data: [5, 10, 20, 40, 100],
                             backgroundColor: '#ef4444',
                             borderRadius: 4
                         },
                         {
-                            label: translations.en.chartReturn, 
-                            data: [18, 31, 62, 124, 310], 
+                            label: translations.en.chartReturn,
+                            data: [18, 31, 62, 124, 310],
                             backgroundColor: '#34d399',
                             borderRadius: 4
                         }
@@ -824,7 +973,7 @@
                         legend: { labels: { color: '#e2e8f0' } },
                         tooltip: {
                             callbacks: {
-                                title: function(tooltipItems) {
+                                title: function (tooltipItems) {
                                     const item = tooltipItems[0];
                                     let label = item.chart.data.labels[item.dataIndex];
                                     return Array.isArray(label) ? label.join(' ') : label;
@@ -848,7 +997,8 @@
 
         initCharts();
         setMode('active'); // Changed initialization to active
-        
+
     </script>
 </body>
+
 </html>
