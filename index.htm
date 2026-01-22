@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USD Strict System Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Chevron Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #f8fafc; /* Slate 50 */
+            transition: all 0.3s ease;
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        /* Custom CSS Tree */
+        .tree {
+            display: flex;
+            justify-content: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            padding-left: 20px;
+            padding-right: 20px;
+            width: 100%;
+            overflow-x: auto;
+        }
+        .tree ul {
+            padding-top: 40px; 
+            position: relative;
+            transition: all 0.5s;
+            display: flex;
+            justify-content: center;
+            padding-left: 0;
+        }
+        .tree li {
+            float: left; text-align: center;
+            list-style-type: none;
+            position: relative;
+            padding: 40px 10px 0 10px;
+            transition: all 0.5s;
+        }
+        .tree li::before, .tree li::after {
+            content: '';
+            position: absolute; top: 0; right: 50%;
+            border-top: 1px solid #475569;
+            width: 50%; height: 40px;
+        }
+        .tree li::after {
+            right: auto; left: 50%;
+            border-left: 1px solid #475569;
+        }
+        .tree li:only-child::after, .tree li:only-child::before {
+            display: none;
+        }
+        .tree li:only-child { padding-top: 0; }
+        .tree li:first-child::before, .tree li:last-child::after {
+            border: 0 none;
+        }
+        .tree li:last-child::before{
+            border-right: 1px solid #475569;
+            border-radius: 0 5px 0 0;
+        }
+        .tree li:first-child::after{
+            border-radius: 5px 0 0 0;
+        }
+        .tree ul ul::before{
+            content: '';
+            position: absolute; top: 0; left: 50%;
+            border-left: 1px solid #475569;
+            width: 0; height: 40px;
+        }
+        
+        .node-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 8px;
+            font-weight: bold;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .node-me { background-color: #f8fafc; color: #0f172a; border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        .node-income { background-color: #34d399; color: #064e3b; } /* Emerald */
+        .node-fund { background-color: #f59e0b; color: #fff; } /* Amber */
+        .node-reentry { background-color: #a855f7; color: #fff; } /* Purple */
+        .node-bonus { background-color: #22d3ee; color: #000; box-shadow: 0 0 8px #22d3ee; } /* Cyan */
+        .node-aura { background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%); color: #0f172a; box-shadow: 0 0 12px #fff; border: 2px solid #fff; } /* White Gold */
+
+        /* Rebirth Node Style (White with Purple Neon Aura) */
+        .node-rebirth {
+            background-color: #ffffff;
+            color: #7e22ce; /* Purple-700 */
+            border: 2px solid #fff;
+            animation: rebirthPulse 2s infinite alternate;
+            font-size: 7px;
+        }
+
+        @keyframes rebirthPulse {
+            0% {
+                box-shadow: 0 0 5px #a855f7, 0 0 10px #a855f7;
+                transform: scale(1);
+            }
+            100% {
+                box-shadow: 0 0 15px #d8b4fe, 0 0 25px #a855f7;
+                transform: scale(1.15);
+            }
+        }
+
+        .legend-dot {
+            width: 14px; height: 14px; border-radius: 50%; display: inline-block; margin-right: 8px; vertical-align: middle;
+        }
+
+        /* Language Toggle Switch */
+        .lang-switch {
+            cursor: pointer;
+            padding: 4px;
+            background: #334155;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            width: 80px;
+            position: relative;
+            transition: background 0.3s;
+        }
+        .lang-switch .knob {
+            width: 34px;
+            height: 26px;
+            background: #22d3ee;
+            border-radius: 18px;
+            position: absolute;
+            left: 2px;
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #0f172a;
+            font-weight: bold;
+        }
+        .lang-switch.th-active .knob {
+            transform: translateX(42px);
+            background: #34d399;
+        }
+
+        /* Plan Tabs */
+        .plan-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .plan-tab {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #94a3b8;
+        }
+        .plan-tab:hover {
+            background: #334155;
+            color: #fff;
+        }
+        .plan-tab.active {
+            background: #22d3ee;
+            color: #0f172a;
+            border-color: #22d3ee;
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
+        }
+
+        /* Collapsible Section Styles */
+        .collapsible-header {
+            cursor: pointer;
+            transition: background-color 0.2s;
+            user-select: none;
+        }
+        .collapsible-header:hover {
+            background-color: #1e293b;
+        }
+        .collapsible-content {
+            max-height: 2000px;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out, padding 0.4s ease;
+            opacity: 1;
+        }
+        .collapsible-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+        .chevron-icon.rotate {
+            transform: rotate(-180deg);
+        }
+        
+        /* Updated Logo Styles: Neon Aura */
+        .logo-neon-aura {
+            border: 2px solid #22d3ee;
+            box-shadow: 0 0 15px #22d3ee, 0 0 30px #22d3ee, inset 0 0 15px #22d3ee;
+            animation: auraBreathing 3s infinite alternate ease-in-out;
+        }
+        
+        @keyframes auraBreathing {
+            0% {
+                box-shadow: 0 0 15px #22d3ee, 0 0 30px #22d3ee, inset 0 0 10px #22d3ee;
+                border-color: #22d3ee;
+            }
+            100% {
+                box-shadow: 0 0 25px #a855f7, 0 0 50px #a855f7, inset 0 0 20px #a855f7;
+                border-color: #a855f7;
+            }
+        }
+
+        /* Mode Buttons */
+        .mode-btn {
+            transition: all 0.2s;
+            transform: scale(1);
+        }
+        .mode-btn:active {
+            transform: scale(0.95);
+        }
+        .mode-btn.active {
+            box-shadow: 0 0 15px currentColor;
+            border-color: currentColor;
+        }
+
+        /* Neon Running Text Effect */
+        .neon-running-text {
+            background: linear-gradient(
+                90deg,
+                #22d3ee 0%,
+                #a855f7 25%,
+                #f472b6 50%,
+                #a855f7 75%,
+                #22d3ee 100%
+            );
+            background-size: 200% auto;
+            color: #fff;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: neonShine 3s linear infinite;
+            filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes neonShine {
+            to {
+                background-position: 200% center;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .node-circle { width: 40px; height: 40px; font-size: 10px; }
+            .tree li { padding: 20px 5px 0 5px; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-slate-800 border-b border-slate-700 shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-cyan-400 tracking-wider uppercase">FlashMoon Special</h1>
+                <!-- Subtitle removed as requested -->
+            </div>
+            
+            <!-- Language Toggle -->
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">EN</span>
+                <div class="lang-switch" id="langToggle" onclick="toggleLanguage()">
+                    <div class="knob" id="langKnob">EN</div>
+                </div>
+                <span class="text-xs text-slate-400">TH</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- 1. Introduction -->
+        <section class="text-center max-w-3xl mx-auto mb-8">
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-4 neon-running-text" id="txt-intro-title">FlashMoon Special Ecosystem</h2>
+            <p class="text-slate-300 leading-relaxed" id="txt-intro-desc">
+                The <strong>USD Strict Multi-Level System</strong> is designed to create a sustainable, infinite loop of revenue through a 15-node binary cycle. Utilizing a <strong>100% distribution model</strong>, every dollar entering the system is instantly allocated to members and the community fund, ensuring zero wastage.
+            </p>
+        </section>
+
+        <!-- 2. The 100% Split - Collapsible -->
+        <section class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
+            <div class="p-6 collapsible-header flex justify-between items-center" onclick="toggleSection('dist-content', 'dist-chevron')">
+                <h3 class="text-xl font-bold text-white border-l-4 border-cyan-500 pl-3" id="txt-dist-title">The 100% Split</h3>
+                <div class="text-slate-400 p-2"><i id="dist-chevron" class="fas fa-chevron-up chevron-icon"></i></div>
+            </div>
+            
+            <div id="dist-content" class="collapsible-content px-6 pb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="flex justify-center items-center py-8">
+                        <div class="w-48 h-48 rounded-full bg-slate-900 flex items-center justify-center relative logo-neon-aura">
+                            <img src="https://flashmoon.io/logo.png" alt="FlashMoon Logo" class="w-full h-full object-contain rounded-full relative z-10 p-4" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
+                            <div id="logo-fallback" class="text-center absolute z-0" style="display:none;">
+                                <i class="fas fa-cube text-5xl text-cyan-400 mb-2"></i>
+                                <span class="block text-slate-300 font-bold tracking-widest text-sm">LOGO</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-4" id="txt-dist-desc">
+                            There are no hidden fees. When a member joins, 100% of the funds are distributed.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate-900 p-3 rounded border border-slate-600">
+                                <span class="block text-emerald-400 font-bold text-lg">20%</span>
+                                <span class="text-xs text-slate-400" id="lbl-sponsor">Sponsor Bonus</span>
+                            </div>
+                            <div class="bg-slate-900 p-3 rounded border border-slate-600">
+                                <span class="block text-cyan-400 font-bold text-lg">80%</span>
+                                <span class="text-xs text-slate-400" id="lbl-structure">Structure Bonus</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Special Features & Rewards - Collapsible -->
+        <section class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
+            <div class="p-6 collapsible-header flex justify-between items-center" onclick="toggleSection('feat-content', 'feat-chevron')">
+                <h3 class="text-xl font-bold text-white border-l-4 border-amber-500 pl-3" id="txt-feat-main-title">Special Features & Rewards</h3>
+                <div class="text-slate-400 p-2"><i id="feat-chevron" class="fas fa-chevron-up chevron-icon"></i></div>
+            </div>
+
+            <div id="feat-content" class="collapsible-content px-6 pb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-purple-900 to-slate-900 p-6 rounded-xl border border-purple-700 shadow-lg relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <span class="text-6xl">∞</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-purple-300 mb-2 flex items-center" id="feat-rebirth-title">
+                            <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm">R</span>
+                            Auto-Rebirth
+                        </h4>
+                        <p class="text-sm text-slate-300 leading-relaxed" id="feat-rebirth-desc">
+                            The system never ends. When the first two nodes on Level 3 (Left) are filled, the income is reserved to automatically purchase a new position for you.
+                        </p>
+                    </div>
+                    <div class="bg-gradient-to-br from-cyan-900 to-slate-900 p-6 rounded-xl border border-cyan-700 shadow-lg relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <span class="text-6xl">★</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-cyan-300 mb-2 flex items-center" id="feat-aura-title">
+                            <span class="bg-cyan-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm">W</span>
+                            White Gold Aura
+                        </h4>
+                        <p class="text-sm text-slate-300 leading-relaxed" id="feat-aura-desc">
+                            <strong>Cross-Plan Cloning:</strong> When you finish a cycle in a higher plan, the final node creates a brand new ID for you in the lower plan, ensuring constant support.
+                        </p>
+                    </div>
+                    <div class="bg-gradient-to-br from-amber-900 to-slate-900 p-6 rounded-xl border border-amber-700 shadow-lg relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <span class="text-6xl">F</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-amber-300 mb-2 flex items-center" id="feat-fund-title">
+                            <span class="bg-amber-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm"><i class="fas fa-coins"></i></span>
+                            Community Fund
+                        </h4>
+                        <p class="text-sm text-slate-300 leading-relaxed" id="feat-fund-desc">
+                            The accumulated Fund is used to purchase <strong>FM Coins</strong>, which are distributed to every member in the system every <strong>7 days</strong>.
+                        </p>
+                    </div>
+                    <div class="bg-gradient-to-br from-pink-900 to-slate-900 p-6 rounded-xl border border-pink-700 shadow-lg relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <span class="text-6xl">L</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-pink-300 mb-2 flex items-center" id="feat-lotto-title">
+                            <span class="bg-pink-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm"><i class="fas fa-ticket-alt"></i></span>
+                            Lotto Jackpot
+                        </h4>
+                        <p class="text-sm text-slate-300 leading-relaxed" id="feat-lotto-desc">
+                            The Lotto Fund accumulates for a prize draw every <strong>15 days</strong>, aligned with the <strong>Thai Government Lottery</strong> schedule.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. The 15-Node Cycle Engine - Collapsible -->
+        <section class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
+            <div class="p-6 collapsible-header flex justify-between items-center" onclick="toggleSection('cycle-content', 'cycle-chevron')">
+                <h3 class="text-xl font-bold text-white border-l-4 border-purple-500 pl-3" id="txt-cycle-title">The 15-Node Cycle Engine</h3>
+                <div class="text-slate-400 p-2"><i id="cycle-chevron" class="fas fa-chevron-up chevron-icon"></i></div>
+            </div>
+
+            <div id="cycle-content" class="collapsible-content px-6 pb-6">
+                <div class="text-center mb-6">
+                    <p class="text-slate-400 text-sm max-w-2xl mx-auto mb-6" id="txt-cycle-desc">
+                        Select a calculation mode and plan below to view income potential.
+                    </p>
+
+                    <!-- Simulation Buttons -->
+                    <div class="flex flex-col sm:flex-row justify-center gap-4 mb-6">
+                        <button onclick="setMode('active')" id="btn-active" class="mode-btn px-6 py-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm sm:text-base border border-emerald-400">
+                            <i class="fas fa-users mr-2"></i> <span id="lbl-btn-active">Recruit All (Active +20%)</span>
+                        </button>
+                        <button onclick="setMode('passive')" id="btn-passive" class="mode-btn px-6 py-3 rounded-lg bg-pink-500 hover:bg-pink-600 text-white font-bold text-sm sm:text-base border border-pink-400 active">
+                            <i class="fas fa-user-slash mr-2"></i> <span id="lbl-btn-passive">No Recruit (Passive)</span>
+                        </button>
+                    </div>
+
+                    <!-- Total Result Display -->
+                    <div class="mb-6 p-4 bg-slate-900/50 rounded-lg border border-slate-600 inline-block">
+                         <span class="text-slate-400 text-sm block mb-1" id="lbl-total-est">Total Estimated Income</span>
+                         <span class="text-3xl font-bold text-white" id="display-total">$18.00</span>
+                    </div>
+
+                    <div class="plan-tabs">
+                        <button class="plan-tab active" onclick="switchPlan(1)" id="btn-p1">Plan 1 ($5)</button>
+                        <button class="plan-tab" onclick="switchPlan(2)" id="btn-p2">Plan 2 ($10)</button>
+                        <button class="plan-tab" onclick="switchPlan(3)" id="btn-p3">Plan 3 ($20)</button>
+                        <button class="plan-tab" onclick="switchPlan(4)" id="btn-p4">Plan 4 ($40)</button>
+                        <button class="plan-tab" onclick="switchPlan(5)" id="btn-p5">Plan 5 ($100)</button>
+                    </div>
+                </div>
+
+                <!-- UPDATED LEGEND -->
+                <div class="flex flex-wrap justify-center gap-y-3 gap-x-6 mb-6 text-xs text-slate-300" id="legend-container">
+                    <div class="flex items-center"><span class="legend-dot bg-slate-100"></span><span data-key="me">ME</span></div>
+                    <div class="flex items-center"><span class="legend-dot bg-emerald-400"></span><span data-key="income">Income</span></div>
+                    <div class="flex items-center"><span class="legend-dot bg-amber-500"></span><span data-key="fund">Fund</span></div>
+                    <div class="flex items-center"><span class="legend-dot bg-purple-500"></span><span data-key="reentry">Re-Entry</span></div>
+                    <!-- Separated Reborn and Clone -->
+                    <div class="flex items-center"><span class="legend-dot bg-white border border-purple-500 shadow-[0_0_8px_#a855f7]"></span><span data-key="reborn">ReBorn</span></div>
+                    <div class="flex items-center"><span class="legend-dot" style="background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%); border: 1px solid #fff; box-shadow: 0 0 5px #fff;"></span><span data-key="clone">Clone/Aura</span></div>
+                </div>
+
+                <!-- Tree Structure -->
+                <div class="tree">
+                    <ul>
+                        <li>
+                            <div class="node-circle node-me" id="node-me">ME</div>
+                            <ul>
+                                <li>
+                                    <div class="node-circle node-income" id="node-l1-1">$0.5</div>
+                                    <ul>
+                                        <li>
+                                            <div class="node-circle node-fund">F</div>
+                                            <ul>
+                                                <li><div class="node-circle node-reentry">R</div></li>
+                                                <li><div class="node-circle node-reentry">R</div></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <div class="node-circle node-fund">F</div>
+                                            <ul>
+                                                <!-- Level 3, Node 3: ReBorn Node -->
+                                                <li><div class="node-circle node-rebirth" id="node-l3-3">ReBorn</div></li>
+                                                <li><div class="node-circle node-income" id="node-l3-4">$2.5</div></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <div class="node-circle node-income" id="node-l1-2">$0.5</div>
+                                    <ul>
+                                        <li>
+                                            <div class="node-circle node-income" id="node-l2-3">$1.0</div>
+                                            <ul>
+                                                <li><div class="node-circle node-income" id="node-l3-5">$2.5</div></li>
+                                                <li><div class="node-circle node-income" id="node-l3-6">$2.5</div></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <div class="node-circle node-income" id="node-l2-4">$1.0</div>
+                                            <ul>
+                                                <li><div class="node-circle node-income" id="node-l3-7">$2.5</div></li>
+                                                <!-- Level 3, Node 8: Clone Node (if applicable) -->
+                                                <li><div class="node-circle node-income" id="node-l3-8">$2.5</div></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. ROI Analysis - Collapsible -->
+        <section class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
+            <div class="p-6 collapsible-header flex justify-between items-center" onclick="toggleSection('roi-content', 'roi-chevron')">
+                <h3 class="text-xl font-bold text-white border-l-4 border-emerald-500 pl-3" id="txt-roi-title">Return on Investment (ROI)</h3>
+                <div class="text-slate-400 p-2"><i id="roi-chevron" class="fas fa-chevron-up chevron-icon"></i></div>
+            </div>
+            
+            <div id="roi-content" class="collapsible-content px-6 pb-6">
+                <p class="text-slate-400 text-sm mb-6" id="txt-roi-desc">
+                    Completing a cycle yields a significant return. For Plan 1 ($5), the total return is calculated at <strong>$18</strong>.
+                </p>
+
+                <!-- Chart -->
+                <div class="chart-container" style="max-width: 800px; margin-bottom: 2rem;">
+                    <canvas id="roiChart"></canvas>
+                </div>
+
+                <!-- Detailed Breakdown Table -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left text-slate-300">
+                        <thead class="text-xs text-slate-400 uppercase bg-slate-900 border-b border-slate-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-3" id="th-plan">Plan</th>
+                                <th scope="col" class="px-6 py-3" id="th-cost">Entry Cost</th>
+                                <th scope="col" class="px-6 py-3" id="th-return">Total Return</th>
+                                <th scope="col" class="px-6 py-3" id="th-note">Note</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700">
+                            <tr class="bg-slate-800 hover:bg-slate-700">
+                                <td class="px-6 py-4 font-medium text-emerald-400">Plan 1</td>
+                                <td class="px-6 py-4">$5</td>
+                                <td class="px-6 py-4 font-bold text-white">$18 - $32</td>
+                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p1">Standard Cycle</td>
+                            </tr>
+                            <tr class="bg-slate-800 hover:bg-slate-700">
+                                <td class="px-6 py-4 font-medium text-cyan-400">Plan 2</td>
+                                <td class="px-6 py-4">$10</td>
+                                <td class="px-6 py-4 font-bold text-white">$31 - $59</td>
+                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p2">Creates Plan 1 Clone</td>
+                            </tr>
+                            <tr class="bg-slate-800 hover:bg-slate-700">
+                                <td class="px-6 py-4 font-medium text-blue-400">Plan 3</td>
+                                <td class="px-6 py-4">$20</td>
+                                <td class="px-6 py-4 font-bold text-white">$62 - $118</td>
+                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p3">Creates Plan 2 Clone</td>
+                            </tr>
+                            <tr class="bg-slate-800 hover:bg-slate-700">
+                                <td class="px-6 py-4 font-medium text-purple-400">Plan 4</td>
+                                <td class="px-6 py-4">$40</td>
+                                <td class="px-6 py-4 font-bold text-white">$124 - $236</td>
+                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p4">Creates Plan 3 Clone</td>
+                            </tr>
+                            <tr class="bg-slate-800 hover:bg-slate-700">
+                                <td class="px-6 py-4 font-medium text-pink-400">Plan 5</td>
+                                <td class="px-6 py-4">$100</td>
+                                <td class="px-6 py-4 font-bold text-white">$310 - $590</td>
+                                <td class="px-6 py-4 text-xs text-slate-500" data-key="note-p5">Clone P4 + Fund/Lotto ($10)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center py-8 border-t border-slate-800">
+            <p class="text-slate-500 text-sm">
+                FlashMoon Special Infographic &copy; 2024.
+            </p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- DATA CONSTANTS ---
+        const planData = {
+            1: { cost: 5,  l1: 0.5, l2: 1.0, l3: 2.5, specialNode: false, specialLabel: "$2.5", passiveTotal: 18, activeTotal: 32 },
+            2: { cost: 10, l1: 1.0, l2: 2.0, l3: 5.0, specialNode: true,  specialLabel: "Clone P1", passiveTotal: 31, activeTotal: 59 },
+            3: { cost: 20, l1: 2.0, l2: 4.0, l3: 10.0, specialNode: true, specialLabel: "Clone P2", passiveTotal: 62, activeTotal: 118 },
+            4: { cost: 40, l1: 4.0, l2: 8.0, l3: 20.0, specialNode: true, specialLabel: "Clone P3", passiveTotal: 124, activeTotal: 236 },
+            5: { cost: 100, l1: 10.0, l2: 20.0, l3: 50.0, specialNode: true, specialLabel: "Clone P4+Fund", passiveTotal: 310, activeTotal: 590 }
+        };
+
+        let currentMode = 'active'; // 'passive' or 'active' - Changed default to active
+        let currentPlan = 1;
+
+        // --- TOGGLE SECTION FUNCTION ---
+        function toggleSection(elementId, chevronId) {
+            const content = document.getElementById(elementId);
+            const chevron = document.getElementById(chevronId);
+            
+            content.classList.toggle('collapsed');
+            chevron.classList.toggle('rotate');
+        }
+
+        // --- SET MODE (ACTIVE/PASSIVE) ---
+        function setMode(mode) {
+            currentMode = mode;
+            const btnPassive = document.getElementById('btn-passive');
+            const btnActive = document.getElementById('btn-active');
+            
+            if (mode === 'passive') {
+                btnPassive.classList.add('active', 'shadow-lg');
+                btnActive.classList.remove('active', 'shadow-lg');
+                btnActive.classList.add('opacity-50');
+                btnPassive.classList.remove('opacity-50');
+            } else {
+                btnActive.classList.add('active', 'shadow-lg');
+                btnPassive.classList.remove('active', 'shadow-lg');
+                btnPassive.classList.add('opacity-50');
+                btnActive.classList.remove('opacity-50');
+            }
+            switchPlan(currentPlan);
+        }
+
+        // --- TRANSLATION DATA ---
+        const translations = {
+            en: {
+                // subtitle removed
+                introTitle: "FlashMoon Special Ecosystem",
+                introDesc: "The <strong>USD Strict Multi-Level System</strong> is designed to create a sustainable, infinite loop of revenue through a 15-node binary cycle. Utilizing a <strong>100% distribution model</strong>, every dollar entering the system is instantly allocated.",
+                
+                distTitle: "The 100% Split",
+                distDesc: "There are no hidden fees. When a member joins, 100% of the funds are distributed. <strong>20%</strong> goes instantly to the direct sponsor, while the remaining <strong>80%</strong> is split across three upline levels.",
+                lblSponsor: "Sponsor Bonus",
+                lblStructure: "Structure Bonus",
+                cycleTitle: "The 15-Node Cycle Engine",
+                cycleDesc: "Select a calculation mode and plan below to view income potential.",
+                btnPassive: "No Recruit (Passive)",
+                btnActive: "Recruit All (Active +20%)",
+                lblTotalEst: "Total Estimated Income",
+                legendMe: "ME", legendIncome: "Income", legendFund: "Fund", legendReentry: "Re-Entry", legendReborn: "ReBorn", legendClone: "Clone/Aura",
+                roiTitle: "Return on Investment (ROI)",
+                roiDesc: "Completing a cycle yields a significant return. For Plan 1 ($5), the total return is calculated at <strong>$18</strong>. Plan 2+ includes logic for cloning IDs to lower plans.",
+                thPlan: "Plan", thCost: "Entry Cost", thReturn: "Potential Income", thNote: "Note",
+                noteP1: "Standard Cycle", noteP2: "Creates Plan 1 Clone (-$5)", noteP3: "Creates Plan 2 Clone (-$10)", noteP4: "Creates Plan 3 Clone (-$20)", noteP5: "Clone P4 (-$40) + Fund/Lotto (-$10)",
+                featMainTitle: "Special Features & Rewards",
+                featRebirthTitle: "Auto-Rebirth", featRebirthDesc: "The system never ends. When the first two nodes on Level 3 (Left) are filled, the income is reserved to automatically purchase a new position for you.",
+                featAuraTitle: "White Gold Aura", featAuraDesc: "<strong>Cross-Plan Cloning:</strong> When you finish a cycle in a higher plan, the final node creates a brand new ID for you in the lower plan, ensuring constant support.",
+                featFundTitle: "Community Fund", featFundDesc: "The accumulated Fund is used to purchase <strong>FM Coins</strong>, which are distributed to every member in the system every <strong>7 days</strong>.",
+                featLottoTitle: "Lotto Jackpot", featLottoDesc: "The Lotto Fund accumulates for a prize draw every <strong>15 days</strong>, aligned with the <strong>Thai Government Lottery</strong> schedule.",
+                chartCost: "Entry Cost", chartReturn: "Total Return"
+            },
+            th: {
+                // subtitle removed
+                introTitle: "ระบบนิเวศ FlashMoon Special",
+                introDesc: "ระบบ <strong>USD Strict Multi-Level</strong> ออกแบบมาเพื่อสร้างรายได้หมุนเวียนอย่างยั่งยืนผ่านผังไบนารี่ 15 โหนด ด้วยโมเดล <strong>กระจายรายได้ 100%</strong> เงินทุกเหรียญที่เข้าสู่ระบบจะถูกจ่ายให้สมาชิกและกองทุนทันที",
+                
+                distTitle: "การแบ่งจ่าย 100%",
+                distDesc: "ไม่มีค่าธรรมเนียมแอบแฝง เมื่อมีสมาชิกใหม่ 100% ของเงินจะถูกกระจายทันที <strong>20%</strong> จ่ายให้ผู้แนะนำตรง และอีก <strong>80%</strong> จ่ายเป็นค่าบริหารทีม 3 ชั้น",
+                lblSponsor: "ค่าแนะนำ (Sponsor)",
+                lblStructure: "ค่าบริหารทีม (Structure)",
+                cycleTitle: "กลไกผัง 15 โหนด",
+                cycleDesc: "เลือกโหมดการคำนวณและแผนด้านล่างเพื่อดูรายได้ที่คาดหวัง",
+                btnPassive: "ไม่ชวนใครเลย (โครงสร้างอย่างเดียว)",
+                btnActive: "ชวนเอง 100% (รับค่าแนะนำ 20%)",
+                lblTotalEst: "รายได้รวมโดยประมาณ",
+                legendMe: "ตัวเรา", legendIncome: "รายได้", legendFund: "กองทุน", legendReentry: "เกิดใหม่", legendReborn: "เกิดใหม่", legendClone: "โคลน/ออร่า",
+                roiTitle: "ผลตอบแทนการลงทุน (ROI)",
+                roiDesc: "เมื่อจบ 1 รอบ คุณจะได้รับผลตอบแทนคุ้มค่า สำหรับ Plan 1 ($5) ผลตอบแทนรวมอยู่ที่ <strong>$18</strong> ส่วน Plan 2 ขึ้นไปจะมีการหักรายได้เพื่อสร้างรหัสโคลนในแผนที่ต่ำกว่า",
+                thPlan: "แผน (Plan)", thCost: "ค่าสมัคร", thReturn: "รายได้ที่สามารถรับได้", thNote: "หมายเหตุ",
+                noteP1: "รอบมาตรฐาน", noteP2: "สร้างรหัสโคลน Plan 1 (-$5)", noteP3: "สร้างรหัสโคลน Plan 2 (-$10)", noteP4: "สร้างรหัสโคลน Plan 3 (-$20)", noteP5: "สร้างโคลน Plan 4 + กองทุน/Lotto (-$50)",
+                featMainTitle: "ฟีเจอร์และรางวัลพิเศษ",
+                featRebirthTitle: "ระบบเกิดใหม่ (Auto-Rebirth)", featRebirthDesc: "ระบบไม่มีที่สิ้นสุด เมื่อโหนด 2 จุดแรกในชั้นที่ 3 (ฝั่งซ้าย) เต็ม ระบบจะเก็บรายได้ไว้ซื้อตำแหน่งใหม่ให้คุณโดยอัตโนมัติ",
+                featAuraTitle: "ออร่าทองคำขาว (White Gold)", featAuraDesc: "<strong>โคลนนิ่งข้ามแผน:</strong> เมื่อคุณจบแผ่นในระดับสูง โหนดสุดท้ายจะสร้างรหัสใหม่ให้คุณในแผนที่ต่ำกว่า เพื่อช่วยพยุงสมาชิกใหม่ในแผนล่าง",
+                featFundTitle: "กองทุนกลาง (Fund)", featFundDesc: "กองทุน Fund จะถูกนำไปซื้อ <strong>FM Coin</strong> เพื่อแจกจ่ายให้กับสมาชิกทุกคนในระบบทุกๆ <strong>7 วัน</strong>",
+                featLottoTitle: "ลุ้นโชค Lotto", featLottoDesc: "กองทุน Lotto จะทำการสะสมเพื่อจับรางวัลใหญ่ทุกๆ <strong>15 วัน</strong> (อ้างอิงตามผลสลากกินแบ่งรัฐบาลไทย)",
+                chartCost: "ค่าสมัคร", chartReturn: "รายได้ที่สามารถรับได้"
+            }
+        };
+
+        let currentLang = 'en';
+
+        // --- TRANSLATION FUNCTION ---
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'th' : 'en';
+            const t = translations[currentLang];
+            const toggle = document.getElementById('langToggle');
+            const knob = document.getElementById('langKnob');
+            if (currentLang === 'th') {
+                toggle.classList.add('th-active');
+                knob.innerText = 'TH';
+            } else {
+                toggle.classList.remove('th-active');
+                knob.innerText = 'EN';
+            }
+
+            // Subtitle update removed
+            document.getElementById('txt-intro-title').innerText = t.introTitle;
+            document.getElementById('txt-intro-desc').innerHTML = t.introDesc;
+
+            document.getElementById('txt-dist-title').innerText = t.distTitle;
+            document.getElementById('txt-dist-desc').innerHTML = t.distDesc;
+            document.getElementById('lbl-sponsor').innerText = t.lblSponsor;
+            document.getElementById('lbl-structure').innerText = t.lblStructure;
+            document.getElementById('txt-cycle-title').innerText = t.cycleTitle;
+            document.getElementById('txt-cycle-desc').innerText = t.cycleDesc;
+            document.getElementById('lbl-btn-passive').innerText = t.btnPassive;
+            document.getElementById('lbl-btn-active').innerText = t.btnActive;
+            document.getElementById('lbl-total-est').innerText = t.lblTotalEst;
+            document.querySelector('[data-key="me"]').innerText = t.legendMe;
+            document.querySelector('[data-key="income"]').innerText = t.legendIncome;
+            document.querySelector('[data-key="fund"]').innerText = t.legendFund;
+            document.querySelector('[data-key="reentry"]').innerText = t.legendReentry;
+            
+            // New Legend Keys
+            document.querySelector('[data-key="reborn"]').innerText = t.legendReborn;
+            document.querySelector('[data-key="clone"]').innerText = t.legendClone;
+
+            document.getElementById('txt-roi-title').innerText = t.roiTitle;
+            document.getElementById('txt-roi-desc').innerHTML = t.roiDesc;
+            document.getElementById('th-plan').innerText = t.thPlan;
+            document.getElementById('th-cost').innerText = t.thCost;
+            document.getElementById('th-return').innerText = t.thReturn;
+            document.getElementById('th-note').innerText = t.thNote;
+            document.querySelector('[data-key="note-p1"]').innerText = t.noteP1;
+            document.querySelector('[data-key="note-p2"]').innerText = t.noteP2;
+            document.querySelector('[data-key="note-p3"]').innerText = t.noteP3;
+            document.querySelector('[data-key="note-p4"]').innerText = t.noteP4;
+            document.querySelector('[data-key="note-p5"]').innerText = t.noteP5;
+            document.getElementById('txt-feat-main-title').innerText = t.featMainTitle;
+            document.getElementById('feat-rebirth-title').innerHTML = `<span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm">R</span>` + t.featRebirthTitle;
+            document.getElementById('feat-rebirth-desc').innerText = t.featRebirthDesc;
+            document.getElementById('feat-aura-title').innerHTML = `<span class="bg-cyan-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm">W</span>` + t.featAuraTitle;
+            document.getElementById('feat-aura-desc').innerHTML = t.featAuraDesc;
+            document.getElementById('feat-fund-title').innerHTML = `<span class="bg-amber-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm"><i class="fas fa-coins"></i></span>` + t.featFundTitle;
+            document.getElementById('feat-fund-desc').innerHTML = t.featFundDesc;
+            document.getElementById('feat-lotto-title').innerHTML = `<span class="bg-pink-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm"><i class="fas fa-ticket-alt"></i></span>` + t.featLottoTitle;
+            document.getElementById('feat-lotto-desc').innerHTML = t.featLottoDesc;
+            
+            // Re-render plan to update text language for ReBorn node
+            switchPlan(currentPlan);
+            updateCharts(t);
+        }
+
+        // --- SWITCH PLAN VISUALIZER ---
+        function switchPlan(planId) {
+            currentPlan = planId;
+            document.querySelectorAll('.plan-tab').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-p${planId}`).classList.add('active');
+
+            const data = planData[planId];
+            const total = currentMode === 'active' ? data.activeTotal : data.passiveTotal;
+            document.getElementById('display-total').innerText = `$${total.toFixed(2)}`;
+
+            document.getElementById('node-l1-1').innerText = `$${data.l1}`;
+            document.getElementById('node-l1-2').innerText = `$${data.l1}`;
+            document.getElementById('node-l2-3').innerText = `$${data.l2}`;
+            document.getElementById('node-l2-4').innerText = `$${data.l2}`;
+
+            // Reset Level 3 Nodes
+            const l3Nodes = ['node-l3-4', 'node-l3-5', 'node-l3-6', 'node-l3-7', 'node-l3-8'];
+            l3Nodes.forEach(id => {
+                const el = document.getElementById(id);
+                el.innerText = `$${data.l3}`;
+                el.className = 'node-circle node-income'; // Default reset
+            });
+
+            // --- L3-3 is now ReBorn ---
+            const nodeL3_3 = document.getElementById('node-l3-3');
+            nodeL3_3.innerText = currentLang === 'th' ? "เกิดใหม่" : "ReBorn";
+            nodeL3_3.className = 'node-circle node-rebirth';
+
+            // --- L3-8: Handle Special Aura/Clone logic if needed ---
+            const lastNode = document.getElementById('node-l3-8');
+            lastNode.innerText = data.specialLabel;
+            
+            if (data.specialNode) {
+                lastNode.classList.remove('node-income');
+                lastNode.classList.add('node-aura');
+            } else {
+                lastNode.classList.remove('node-aura');
+                lastNode.classList.add('node-income');
+            }
+        }
+
+        // --- Charts Initialization ---
+        let roiChart;
+
+        function initCharts() {
+            const ctxRoi = document.getElementById('roiChart').getContext('2d');
+            roiChart = new Chart(ctxRoi, {
+                type: 'bar',
+                data: {
+                    labels: ['Plan 1', 'Plan 2', 'Plan 3', 'Plan 4', 'Plan 5'],
+                    datasets: [
+                        {
+                            label: translations.en.chartCost, 
+                            data: [5, 10, 20, 40, 100],
+                            backgroundColor: '#ef4444',
+                            borderRadius: 4
+                        },
+                        {
+                            label: translations.en.chartReturn, 
+                            data: [18, 31, 62, 124, 310], 
+                            backgroundColor: '#34d399',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#e2e8f0' } },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const item = tooltipItems[0];
+                                    let label = item.chart.data.labels[item.dataIndex];
+                                    return Array.isArray(label) ? label.join(' ') : label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#cbd5e1' } },
+                        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+        }
+
+        function updateCharts(t) {
+            roiChart.data.datasets[0].label = t.chartCost;
+            roiChart.data.datasets[1].label = t.chartReturn;
+            roiChart.update();
+        }
+
+        initCharts();
+        setMode('active'); // Changed initialization to active
+        
+    </script>
+</body>
+</html>
